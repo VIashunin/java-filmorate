@@ -26,7 +26,7 @@ public class FilmController {
             log.info("Film with id:{} was successfully added.", film.getId());
             return film;
         } else {
-            log.warn("When adding a movie, a data validation error occurred with the following values: " + validation);
+            log.error("When adding a movie, a data validation error occurred with the following values: " + validation);
             throw new ValidationException("When adding a movie, a data validation error occurred with the following values: " + validation);
         }
     }
@@ -34,7 +34,7 @@ public class FilmController {
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
         if (film.getId() == 0) {
-            log.warn("Film doesn't have an id.");
+            log.error("Film doesn't have an id.");
             throw new ValidationException("Film doesn't have an id.");
         } else {
             if (films.containsKey(film.getId())) {
@@ -44,11 +44,11 @@ public class FilmController {
                     log.info("Film with id:{} was successfully updated.", film.getId());
                     return film;
                 } else {
-                    log.warn("When updating a movie, a data validation error occurred with the following values: " + validation);
+                    log.error("When updating a movie, a data validation error occurred with the following values: " + validation);
                     throw new ValidationException("When updating a movie, a data validation error occurred with the following values: " + validation);
                 }
             } else {
-                log.warn("Film with id:{} does not exist.", film.getId());
+                log.error("Film with id:{} does not exist.", film.getId());
                 throw new ValidationException("Film with id:" + film.getId() + " does not exist.");
             }
         }

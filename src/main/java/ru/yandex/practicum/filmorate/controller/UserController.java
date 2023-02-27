@@ -29,7 +29,7 @@ public class UserController {
             log.info("User with id:{} was successfully added.", user.getId());
             return user;
         } else {
-            log.warn("When adding a user, a data validation error occurred with the following values: " + validation);
+            log.error("When adding a user, a data validation error occurred with the following values: " + validation);
             throw new ValidationException("When adding a user, a data validation error occurred with the following values: " + validation);
         }
     }
@@ -37,7 +37,7 @@ public class UserController {
     @PutMapping
     public User updateUser(@RequestBody User user) {
         if (user.getId() == 0) {
-            log.warn("User doesn't have an id.");
+            log.error("User doesn't have an id.");
             throw new ValidationException("User doesn't have an id.");
         } else {
             if (users.containsKey(user.getId())) {
@@ -50,11 +50,11 @@ public class UserController {
                     log.info("User with id:{} was successfully updated.", user.getId());
                     return user;
                 } else {
-                    log.warn("When updating a user, a data validation error occurred with the following values: " + validation);
+                    log.error("When updating a user, a data validation error occurred with the following values: " + validation);
                     throw new ValidationException("When updating a user, a data validation error occurred with the following values: " + validation);
                 }
             } else {
-                log.warn("User with id:{} does not exist.", user.getId());
+                log.error("User with id:{} does not exist.", user.getId());
                 throw new ValidationException("User with id:" + user.getId() + " does not exist.");
             }
         }

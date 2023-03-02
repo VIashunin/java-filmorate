@@ -1,61 +1,55 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.validator.FilmValidator;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/films")
-@Slf4j
 public class FilmController {
-    int generatorId = 1;
-    HashMap<Integer, Film> films = new HashMap<>();
-    FilmValidator filmValidator = new FilmValidator();
+    FilmService filmService;
+
+    @Autowired
+    public FilmController(FilmService filmService) {
+        this.filmService = filmService;
+    }
 
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
-        String validation = filmValidator.validateFilm(film);
-        if (validation.isEmpty()) {
-            film.setId(generatorId++);
-            films.put(film.getId(), film);
-            log.info("Film with id:{} was successfully added.", film.getId());
-            return film;
-        } else {
-            log.error("When adding a movie, a data validation error occurred with the following values: " + validation);
-            throw new ValidationException("When adding a movie, a data validation error occurred with the following values: " + validation);
-        }
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film updateFilm(@RequestBody Film film) {
-        if (film.getId() == 0) {
-            log.error("Film doesn't have an id.");
-            throw new ValidationException("Film doesn't have an id.");
-        } else {
-            if (films.containsKey(film.getId())) {
-                String validation = filmValidator.validateFilm(film);
-                if (validation.isEmpty()) {
-                    films.put(film.getId(), film);
-                    log.info("Film with id:{} was successfully updated.", film.getId());
-                    return film;
-                } else {
-                    log.error("When updating a movie, a data validation error occurred with the following values: " + validation);
-                    throw new ValidationException("When updating a movie, a data validation error occurred with the following values: " + validation);
-                }
-            } else {
-                log.error("Film with id:{} does not exist.", film.getId());
-                throw new ValidationException("Film with id:" + film.getId() + " does not exist.");
-            }
-        }
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
     public Collection<Film> getFilms() {
-        return films.values();
+        return filmService.getFilms();
     }
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Integer id, @PathVariable Integer userId) {
+        filmService.deleteLike(id, userId);
+    }
+
+    @GetMapping("/popular")
+    public Collection<Film> getPopularFilms(@RequestParam(defaultValue = "10") Integer count) {
+        return filmService.getPopularFilms(count);
+    }
+
 }

@@ -1,11 +1,13 @@
 package ru.yandex.practicum.filmorate.validator;
 
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FilmValidator {
 
     public String validateFilm(Film film) {

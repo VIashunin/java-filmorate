@@ -1,15 +1,20 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.ItemNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.film.FilmService;
+import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.validator.FilmValidator;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    FilmController filmController = new FilmController();
+    FilmController filmController = new FilmController(new FilmService(new FilmValidator(), new InMemoryFilmStorage(), new InMemoryUserStorage()));
 
     @Test
     public void testAddNormalFilm() {
@@ -19,7 +24,7 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(60);
         filmController.addFilm(film);
-        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60)]"
+        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60, likes=[], rate=null)]"
                 , filmController.getFilms().toString());
     }
 
@@ -60,7 +65,7 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(60);
         filmController.addFilm(film);
-        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60)]"
+        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60, likes=[], rate=null)]"
                 , filmController.getFilms().toString());
         Film film1 = new Film();
         film1.setId(1);
@@ -69,7 +74,7 @@ class FilmControllerTest {
         film1.setReleaseDate(LocalDate.of(2001, 1, 1));
         film1.setDuration(61);
         filmController.updateFilm(film1);
-        assertEquals("[Film(id=1, name=Movie - 1, description=Movie Description - 1, releaseDate=2001-01-01, duration=61)]"
+        assertEquals("[Film(id=1, name=Movie - 1, description=Movie Description - 1, releaseDate=2001-01-01, duration=61, likes=[], rate=null)]"
                 , filmController.getFilms().toString());
     }
 
@@ -81,7 +86,7 @@ class FilmControllerTest {
         film.setReleaseDate(LocalDate.of(2000, 1, 1));
         film.setDuration(60);
         filmController.addFilm(film);
-        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60)]"
+        assertEquals("[Film(id=1, name=Movie, description=Movie Description, releaseDate=2000-01-01, duration=60, likes=[], rate=null)]"
                 , filmController.getFilms().toString());
         Film film1 = new Film();
         film1.setId(1);
@@ -100,8 +105,8 @@ class FilmControllerTest {
                 "duration of the film should be positive.", exception.getMessage());
         Film film2 = new Film();
         film2.setId(999);
-        ValidationException exception1 = assertThrows(
-                ValidationException.class,
+        ItemNotFoundException exception1 = assertThrows(
+                ItemNotFoundException.class,
                 () -> filmController.updateFilm(film2)
         );
         assertEquals("Film with id:999 does not exist.", exception1.getMessage());
@@ -110,10 +115,10 @@ class FilmControllerTest {
     @Test
     public void testUpdateEmptyFilm() {
         Film film = new Film();
-        ValidationException exception = assertThrows(
-                ValidationException.class,
+        ItemNotFoundException exception = assertThrows(
+                ItemNotFoundException.class,
                 () -> filmController.updateFilm(film)
         );
-        assertEquals("Film doesn't have an id.", exception.getMessage());
+        assertEquals("Film with id:0 does not exist.", exception.getMessage());
     }
 }

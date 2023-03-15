@@ -8,13 +8,16 @@ import ru.yandex.practicum.filmorate.service.film.FilmService;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.validator.FilmValidator;
+import ru.yandex.practicum.filmorate.validator.UserValidator;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
-    FilmController filmController = new FilmController(new FilmService(new FilmValidator(), new InMemoryFilmStorage(), new InMemoryUserStorage()));
+    InMemoryFilmStorage inMemoryFilmStorage = new InMemoryFilmStorage();
+    FilmController filmController = new FilmController(new FilmService(new FilmValidator(inMemoryFilmStorage)
+            , new UserValidator(new InMemoryUserStorage()), inMemoryFilmStorage));
 
     @Test
     public void testAddNormalFilm() {
@@ -41,7 +44,7 @@ class FilmControllerTest {
                 ValidationException.class,
                 () -> filmController.addFilm(film)
         );
-        assertEquals("When adding a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
+        assertEquals("When adding/updating a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
                 "description of the film can't be longer than 200 symbols, release date of the film can't be earlier than 28.12.1895, " +
                 "duration of the film should be positive.", exception.getMessage());
     }
@@ -53,7 +56,7 @@ class FilmControllerTest {
                 ValidationException.class,
                 () -> filmController.addFilm(film)
         );
-        assertEquals("When adding a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
+        assertEquals("When adding/updating a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
                 "film should have a description, film should have a release date, film should have a duration.", exception.getMessage());
     }
 
@@ -100,7 +103,7 @@ class FilmControllerTest {
                 ValidationException.class,
                 () -> filmController.updateFilm(film1)
         );
-        assertEquals("When updating a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
+        assertEquals("When adding/updating a movie, a data validation error occurred with the following values: name of the film can't be empty, " +
                 "description of the film can't be longer than 200 symbols, release date of the film can't be earlier than 28.12.1895, " +
                 "duration of the film should be positive.", exception.getMessage());
         Film film2 = new Film();

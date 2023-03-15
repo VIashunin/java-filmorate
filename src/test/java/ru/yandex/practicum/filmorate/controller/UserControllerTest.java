@@ -13,7 +13,9 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserControllerTest {
-    UserController userController = new UserController(new UserService(new UserValidator(), new InMemoryUserStorage()));
+    InMemoryUserStorage inMemoryUserStorage = new InMemoryUserStorage();
+    UserController userController = new UserController(new UserService(new UserValidator(inMemoryUserStorage)
+            , inMemoryUserStorage));
 
     @Test
     public void testAddNormalUser1() {
@@ -48,7 +50,7 @@ class UserControllerTest {
                 ValidationException.class,
                 () -> userController.addUser(user)
         );
-        assertEquals("When adding a user, a data validation error occurred with the following values: " +
+        assertEquals("When adding/updating a user, a data validation error occurred with the following values: " +
                 "login can't be empty and shouldn't contain space, email can't be empty and should contain @, " +
                 "date of birth can't be in the future.", exception.getMessage());
     }
@@ -60,7 +62,7 @@ class UserControllerTest {
                 ValidationException.class,
                 () -> userController.addUser(user)
         );
-        assertEquals("When adding a user, a data validation error occurred with the following values: " +
+        assertEquals("When adding/updating a user, a data validation error occurred with the following values: " +
                 "login can't be empty and shouldn't contain space, email can't be empty and should contain @, " +
                 "date of birth can't be empty.", exception.getMessage());
     }
@@ -105,7 +107,7 @@ class UserControllerTest {
                 ValidationException.class,
                 () -> userController.updateUser(user1)
         );
-        assertEquals("When updating a user, a data validation error occurred with the following values: " +
+        assertEquals("When adding/updating a user, a data validation error occurred with the following values: " +
                 "login can't be empty and shouldn't contain space, email can't be empty and should contain @, " +
                 "date of birth can't be in the future.", exception.getMessage());
         User user2 = new User();

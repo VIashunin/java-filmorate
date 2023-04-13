@@ -125,7 +125,6 @@ class FilmorateApplicationTests {
             .mpa(Mpa.builder().id(2).name("PG").build())
             .build();
 
-    //database test
     @Test
     public void testDatabase() {
         //genres

@@ -1,13 +1,9 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ItemNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,28 +12,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class UserValidator {
-    @Qualifier("InMemoryUserStorage")
-    UserStorage userStorage;
-
-    @Autowired
-    public UserValidator(UserStorage userStorage) {
-        this.userStorage = userStorage;
-    }
-
-    public void userIdShouldBePositive(int id) {
-        if (id <= 0) {
-            log.error("User with id:{} does not exist.", id);
-            throw new ItemNotFoundException("User with id:" + id + " does not exist.");
-        }
-    }
-
-    public void userIdShouldExist(int id) {
-        if (!userStorage.getUsersMap().containsKey(id)) {
-            log.error("User with id:{} does not exist.", id);
-            throw new ItemNotFoundException("User with id:" + id + " does not exist.");
-        }
-    }
-
     public void validateUser(User user) {
         List<String> errors = validateUserParams(user);
         StringBuilder str = new StringBuilder();

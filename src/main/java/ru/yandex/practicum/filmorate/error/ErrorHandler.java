@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ItemNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 
 @RestControllerAdvice(basePackages = "ru.yandex.practicum.filmorate")
-public class ErrorHandle {
+public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

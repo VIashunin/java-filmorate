@@ -5,16 +5,16 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class User {
+public class Genre implements Comparable<Genre> {
     private Integer id;
-    private String login;
     private String name;
-    private String email;
-    private LocalDate birthday;
+
+    @Override
+    public int compareTo(Genre genre) {
+        return Integer.compare(id, genre.getId());
+    }
 }

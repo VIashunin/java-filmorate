@@ -2,8 +2,7 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.List;
 
 public interface FilmStorage {
 
@@ -11,15 +10,9 @@ public interface FilmStorage {
 
     Film updateFilm(Film film);
 
-    Collection<Film> getFilms();
+    List<Film> getAllFilms();
 
     Film getFilmById(Integer id);
 
-    Map<Integer, Film> getFilmsMap();
-
-    void addLike (Integer id, Integer userId);
-
-    void deleteLike(Integer id, Integer userId);
-
-    Collection<Film> getPopularFilms(Integer count);
+    List<Film> getPopularFilms(Integer count);
 }

@@ -40,12 +40,8 @@ public class FriendsDbStorage implements FriendsStorage {
 
     @Override
     public List<User> getCommonFriends(Integer userId, Integer friendId) {
-        String sql = "SELECT friend_id FROM friends WHERE user_id = ? INTERSECT SELECT friend_id FROM friends WHERE user_id = ?";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser1(rs), userId, friendId);
-    }
-
-    private User makeUser1(ResultSet rs) throws SQLException {
-        return userStorage.getUserById(rs.getInt("friend_id"));
+        String sql = "SELECT * FROM users WHERE id IN (SELECT friend_id FROM friends WHERE user_id = ? INTERSECT SELECT friend_id FROM friends WHERE user_id = ?)";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> makeUser(rs), userId, friendId);
     }
 
     @Override

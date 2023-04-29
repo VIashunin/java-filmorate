@@ -79,7 +79,7 @@ public class FilmDbStorage implements FilmStorage {
             filmGenreStorage.deleteGenresByFilmId(film.getId());
             filmGenreStorage.addGenresByFilmId(film.getId(), film.getGenres());
         }
-        return film;
+        return getFilmById(film.getId());
     }
 
     @Override

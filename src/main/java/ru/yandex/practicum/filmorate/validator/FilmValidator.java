@@ -1,13 +1,9 @@
 package ru.yandex.practicum.filmorate.validator;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ItemNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,28 +12,6 @@ import java.util.List;
 @Slf4j
 @Component
 public class FilmValidator {
-    @Qualifier("InMemoryFilmStorage")
-    FilmStorage filmStorage;
-
-    @Autowired
-    public FilmValidator(FilmStorage filmStorage) {
-        this.filmStorage = filmStorage;
-    }
-
-    public void filmIdShouldBePositive(int id) {
-        if (id <= 0) {
-            log.error("Film with id:{} does not exist.", id);
-            throw new ItemNotFoundException("Film with id:" + id + " does not exist.");
-        }
-    }
-
-    public void filmIdShouldExist(int id) {
-        if (!filmStorage.getFilmsMap().containsKey(id)) {
-            log.error("Film with id:{} does not exist.", id);
-            throw new ItemNotFoundException("Film with id:" + id + " does not exist.");
-        }
-    }
-
     public void countShouldBePositive(int count) {
         if (count <= 0) {
             log.error("Quantity of films should be positive.");
